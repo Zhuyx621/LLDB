@@ -16,7 +16,7 @@ Loader, Dumper = OrderedYaml()
 
 
 def parse(opt_path, is_train=True):
-    with open(opt_path, mode="r") as f:
+    with open(opt_path, mode="r",encoding='utf-8') as f:
         opt = yaml.load(f, Loader=Loader)
     # export CUDA_VISIBLE_DEVICES
     gpu_list = ",".join(str(x) for x in opt["gpu_ids"])
@@ -64,7 +64,7 @@ def parse(opt_path, is_train=True):
         osp.join(__file__, osp.pardir, osp.pardir, osp.pardir, osp.pardir)
     )
     path = osp.abspath(__file__)
-    config_dir = path.split("/")[-2]
+    config_dir = os.path.basename(os.path.dirname(path))
     if is_train:
         experiments_root = osp.join(
             opt["path"]["root"], "experiments", config_dir, opt["name"]

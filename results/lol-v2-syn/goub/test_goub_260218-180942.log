@@ -1,0 +1,48 @@
+26-02-18 18:09:42.222 - INFO:   name: goub
+  suffix: None
+  model: denoising
+  distortion: derain
+  gpu_ids: [1]
+  sde:[
+    lambda_square: 30
+    T: 100
+    schedule: cosine
+    eps: 0.005
+  ]
+  degradation:[
+    scale: 4
+  ]
+  datasets:[
+    test1:[
+      name: Val_Dataset
+      mode: LQGT
+      dataroot_GT: C:/datasets/LOL-v2/LOL-v2/Synthetic/Test/Normal
+      dataroot_LQ: C:/datasets/LOL-v2/LOL-v2/Synthetic/Test/Low
+      phase: test1
+      scale: 1
+      data_type: img
+    ]
+  ]
+  network_G:[
+    which_model_G: ConditionalNAFNet
+    setting:[
+      width: 64
+      enc_blk_nums: [1, 1, 1, 28]
+      middle_blk_num: 1
+      dec_blk_nums: [1, 1, 1, 1]
+    ]
+  ]
+  path:[
+    pretrain_model_G: C:/Users/÷Ï”Ìœ™/Desktop/lolv2-syn.pth
+    root: C:\LLDB
+    results_root: C:\LLDB\results\lol-v2-syn\goub
+    log: C:\LLDB\results\lol-v2-syn\goub
+  ]
+  is_train: False
+
+26-02-18 18:09:42.222 - INFO: Dataset [LQGTDataset - Val_Dataset] is created.
+26-02-18 18:09:42.222 - INFO: Number of test images in [Val_Dataset]: 100
+26-02-18 18:09:42.912 - INFO: Loading model for G [C:/Users/÷Ï”Ìœ™/Desktop/lolv2-syn.pth] ...
+26-02-18 18:09:43.199 - INFO: Model [DenoisingModel] is created.
+26-02-18 18:09:43.687 - INFO: 
+Testing [Val_Dataset]...

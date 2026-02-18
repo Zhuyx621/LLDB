@@ -5,7 +5,7 @@ import sys
 import time
 from collections import OrderedDict
 import torchvision.utils as tvutils
-
+import shutil
 import numpy as np
 import torch
 from IPython import embed
@@ -38,8 +38,21 @@ util.mkdirs(
     )
 )
 
-os.system("rm ./result")
-os.symlink(os.path.join(opt["path"]["results_root"], ".."), "./result")
+# os.system("rm ./result")
+# os.symlink(os.path.join(opt["path"]["results_root"], ".."), "./result")
+result_dir = "./result"
+# 删除已存在的result目录
+if os.path.exists(result_dir):
+    if os.path.islink(result_dir):
+        os.unlink(result_dir)
+    elif os.path.isdir(result_dir):
+        shutil.rmtree(result_dir)
+    else:
+        os.remove(result_dir)
+
+# Windows普通用户没有创建符号链接的权限，直接创建目录
+os.makedirs(result_dir, exist_ok=True)
+
 
 util.setup_logger(
     "base",

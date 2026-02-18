@@ -5,6 +5,7 @@ import sys
 import time
 from collections import OrderedDict
 import torchvision.utils as tvutils
+import shutil  # 添加shutil用于删除目录
 
 import numpy as np
 import torch
@@ -20,6 +21,7 @@ from data import create_dataloader, create_dataset
 from data.util import bgr2ycbcr
 import torch.nn.functional as F
 import cv2
+
 #### options
 parser = argparse.ArgumentParser()
 parser.add_argument("-opt", type=str, required=True, help="Path to options YMAL file.")
@@ -38,8 +40,19 @@ util.mkdirs(
     )
 )
 
-os.system("rm ./result")
-os.symlink(os.path.join(opt["path"]["results_root"], ".."), "./result")
+# 修改符号链接部分 - 使用普通目录替代
+result_dir = "./result"
+# 删除已存在的result目录
+if os.path.exists(result_dir):
+    if os.path.islink(result_dir):
+        os.unlink(result_dir)
+    elif os.path.isdir(result_dir):
+        shutil.rmtree(result_dir)
+    else:
+        os.remove(result_dir)
+
+# Windows普通用户没有创建符号链接的权限，直接创建目录
+os.makedirs(result_dir, exist_ok=True)
 
 util.setup_logger(
     "base",
@@ -119,20 +132,18 @@ for test_loader in test_loaders:
             save_img_path = os.path.join(dataset_dir, img_name + suffix + ".png")
         else:
             save_img_path = os.path.join(dataset_dir, img_name + ".png")
-        print("图片保存在",save_img_path)
-        # util.save_img(output, save_img_path)
+        print("图片保存在", save_img_path)
 
         if need_GT:
             gt_img = GT_ / 255.0
             sr_img = output / 255.0
-            # print(type(gt_img),gt_img)
-            # print(type(sr_img),sr_img)
-            sr_img_1=util.use_gt_mean_easy(sr_img,gt_img)  #use GT mean
-            # print("sr_img",torch.from_numpy(sr_img).shape)
-            sr_img_2=util.use_gt_mean_hard(sr_img,gt_img)  #use GT mean
+            
+            sr_img_1 = util.use_gt_mean_easy(sr_img, gt_img)  #use GT mean
+            sr_img_2 = util.use_gt_mean_hard(sr_img, gt_img)  #use GT mean
             sr_img = sr_img_1 if util.calculate_psnr(sr_img_1, gt_img) > util.calculate_psnr(sr_img_2, gt_img) else sr_img_2
-            sr_img = sr_img_1
-            util.save_img(sr_img*255, save_img_path)
+            sr_img = sr_img_1  # 这行看起来是调试用的，可以根据需要保留或删除
+            util.save_img(sr_img * 255, save_img_path)
+            
             crop_border = opt["crop_border"] if opt["crop_border"] else scale
             if crop_border == 0:
                 cropped_sr_img = sr_img
@@ -148,12 +159,33 @@ for test_loader in test_loaders:
             psnr = util.calculate_psnr(cropped_sr_img * 255, cropped_gt_img * 255)
             ssim = util.calculate_ssim(cropped_sr_img * 255, cropped_gt_img * 255)
 
-            sr_img_new=torch.from_numpy(np.float32(sr_img*255))
-            sr_img_new=torch.reshape(sr_img_new,((3,400,600)))
-            print(sr_img_new.shape)
+            # 修复reshape问题 - 使用插值而不是reshape
+            sr_img_tensor = torch.from_numpy(np.float32(sr_img * 255)).permute(2, 0, 1)  # [H,W,C] -> [C,H,W]
+            print(f"原始tensor形状: {sr_img_tensor.shape}")
+            
+            # 获取GT的原始大小
+            #_, target_h, target_w = GT.shape
+            if len(GT.shape) == 4:  # [B, C, H, W]
+                _, _, target_h, target_w = GT.shape
+            elif len(GT.shape) == 3:  # [C, H, W]
+                _, target_h, target_w = GT.shape
+            else:
+                target_h, target_w = 384, 384  # 默认值
+                print(f"警告: 未知的GT形状 {GT.shape}，使用默认大小")
+            print(f"目标大小: {target_h}x{target_w}")
+            
+            # 使用插值调整到GT大小
+            sr_img_new = F.interpolate(
+                sr_img_tensor.unsqueeze(0),  # [1,C,H,W]
+                size=(target_h, target_w),
+                mode='bilinear',
+                align_corners=False
+            ).squeeze(0)  # [C,H,W]
+            
+            print(f"调整后tensor形状: {sr_img_new.shape}")
+            
             lp_score = lpips_fn(
                 GT.to(device) * 2 - 1, SR_img.to(device) * 2 - 1).squeeze().item()
-
 
             test_results["psnr"].append(psnr)
             test_results["ssim"].append(ssim)
@@ -200,7 +232,6 @@ for test_loader in test_loaders:
         else:
             logger.info(img_name)
 
-
     ave_lpips = sum(test_results["lpips"]) / len(test_results["lpips"])
     ave_psnr = sum(test_results["psnr"]) / len(test_results["psnr"])
     ave_ssim = sum(test_results["ssim"]) / len(test_results["ssim"])
@@ -219,7 +250,8 @@ for test_loader in test_loaders:
         )
 
     logger.info(
-            "----average LPIPS\t: {:.6f}\n".format(ave_lpips)
-        )
+        "----average LPIPS\t: {:.6f}\n".format(ave_lpips)
+    )
 
+    # 修复打印错误
     print(f"average test time: {np.mean(test_times):.4f}")

@@ -18,8 +18,8 @@ datasets:
   test1:
     name: Val_Dataset
     mode: LQGT
-    dataroot_GT: /data/majunlong/LOL-v2/Synthetic/Test/Normal
-    dataroot_LQ: /data/majunlong/LOL-v2/Synthetic/Test/Low
+    dataroot_GT: C:/datasets/LOL-v2/LOL-v2/Synthetic/Test/Normal
+    dataroot_LQ: C:/datasets/LOL-v2/LOL-v2/Synthetic/Test/Low
 
 
 network_G:
@@ -32,4 +32,4 @@ network_G:
 
 #### path
 path:
-  pretrain_model_G: ~
+  pretrain_model_G: C:/Users/朱禹溪/Desktop/lolv2-syn.pth

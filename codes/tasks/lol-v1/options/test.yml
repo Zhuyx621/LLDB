@@ -2,7 +2,7 @@ name: goub
 suffix: ~  # add suffix to saved images
 model: denoising
 distortion: derain
-gpu_ids: [1]
+gpu_ids: [0]
 
 sde:
   lambda_square: 30
@@ -18,8 +18,8 @@ datasets:
   test1:
     name: Val_Dataset
     mode: LQGT
-    dataroot_GT: /data/majunlong/dataset/eval15/high
-    dataroot_LQ: /data/majunlong/dataset/eval15/low
+    dataroot_GT: C:/datasets/LOL-v1/eval15/high
+    dataroot_LQ: C:/datasets/LOL-v1/eval15/low
 
 
 network_G:
@@ -32,4 +32,4 @@ network_G:
 
 #### path
 path:
-  pretrain_model_G: ~
+  pretrain_model_G: C:/Users/朱禹溪/Desktop/lolv1.pth

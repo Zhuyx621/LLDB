@@ -1,0 +1,72 @@
+26-02-16 17:27:51.301 - INFO:   name: goub
+  suffix: None
+  model: denoising
+  distortion: derain
+  gpu_ids: [0]
+  sde:[
+    lambda_square: 30
+    T: 100
+    schedule: cosine
+    eps: 0.005
+  ]
+  degradation:[
+    scale: 4
+  ]
+  datasets:[
+    test1:[
+      name: Val_Dataset
+      mode: LQGT
+      dataroot_GT: C:/datasets/LOL-v1/eval15/high
+      dataroot_LQ: C:/datasets/LOL-v1/eval15/low
+      phase: test1
+      scale: 1
+      data_type: img
+    ]
+  ]
+  network_G:[
+    which_model_G: ConditionalNAFNet
+    setting:[
+      width: 64
+      enc_blk_nums: [1, 1, 1, 28]
+      middle_blk_num: 1
+      dec_blk_nums: [1, 1, 1, 1]
+    ]
+  ]
+  path:[
+    pretrain_model_G: C:/Users/÷Ï”Ìœ™/Desktop/lolv1.pth
+    root: C:\LLDB
+    results_root: C:\LLDB\results\lol-v1\goub
+    log: C:\LLDB\results\lol-v1\goub
+  ]
+  is_train: False
+
+26-02-16 17:27:51.301 - INFO: Dataset [LQGTDataset - Val_Dataset] is created.
+26-02-16 17:27:51.301 - INFO: Number of test images in [Val_Dataset]: 15
+26-02-16 17:27:52.144 - INFO: Loading model for G [C:/Users/÷Ï”Ìœ™/Desktop/lolv1.pth] ...
+26-02-16 17:27:52.339 - INFO: Model [DenoisingModel] is created.
+26-02-16 17:27:52.812 - INFO: 
+Testing [Val_Dataset]...
+26-02-16 17:28:27.945 - INFO: img  0:1               - PSNR: 24.269670 dB; SSIM: 0.907114; LPIPS: 0.086150; PSNR_Y: 27.442198 dB; SSIM_Y: 0.954601.
+26-02-16 17:29:02.331 - INFO: img  1:111             - PSNR: 31.921148 dB; SSIM: 0.942805; LPIPS: 0.071745; PSNR_Y: 37.227526 dB; SSIM_Y: 0.972614.
+26-02-16 17:29:36.219 - INFO: img  2:146             - PSNR: 28.086986 dB; SSIM: 0.919557; LPIPS: 0.071431; PSNR_Y: 32.733160 dB; SSIM_Y: 0.969146.
+26-02-16 17:30:09.241 - INFO: img  3:179             - PSNR: 23.712223 dB; SSIM: 0.864844; LPIPS: 0.091336; PSNR_Y: 35.959647 dB; SSIM_Y: 0.965465.
+26-02-16 17:30:44.540 - INFO: img  4:22              - PSNR: 30.483914 dB; SSIM: 0.916846; LPIPS: 0.094425; PSNR_Y: 37.314993 dB; SSIM_Y: 0.957294.
+26-02-16 17:31:21.116 - INFO: img  5:23              - PSNR: 28.947323 dB; SSIM: 0.890653; LPIPS: 0.152193; PSNR_Y: 34.450667 dB; SSIM_Y: 0.933934.
+26-02-16 17:31:56.195 - INFO: img  6:493             - PSNR: 21.933543 dB; SSIM: 0.715542; LPIPS: 0.200178; PSNR_Y: 25.832109 dB; SSIM_Y: 0.828757.
+26-02-16 17:32:31.595 - INFO: img  7:547             - PSNR: 26.082125 dB; SSIM: 0.898688; LPIPS: 0.124477; PSNR_Y: 28.635149 dB; SSIM_Y: 0.924916.
+26-02-16 17:33:07.688 - INFO: img  8:55              - PSNR: 24.876415 dB; SSIM: 0.910295; LPIPS: 0.119295; PSNR_Y: 27.232353 dB; SSIM_Y: 0.944498.
+26-02-16 17:33:49.772 - INFO: img  9:665             - PSNR: 28.148244 dB; SSIM: 0.844123; LPIPS: 0.187128; PSNR_Y: 34.451510 dB; SSIM_Y: 0.910704.
+26-02-16 17:34:26.321 - INFO: img 10:669             - PSNR: 28.127572 dB; SSIM: 0.909755; LPIPS: 0.114648; PSNR_Y: 32.880176 dB; SSIM_Y: 0.946232.
+26-02-16 17:35:02.125 - INFO: img 11:748             - PSNR: 29.729993 dB; SSIM: 0.923939; LPIPS: 0.079623; PSNR_Y: 36.899253 dB; SSIM_Y: 0.966012.
+26-02-16 17:35:36.834 - INFO: img 12:778             - PSNR: 25.674716 dB; SSIM: 0.829162; LPIPS: 0.145630; PSNR_Y: 30.803329 dB; SSIM_Y: 0.902031.
+26-02-16 17:36:13.066 - INFO: img 13:780             - PSNR: 29.582685 dB; SSIM: 0.827008; LPIPS: 0.082112; PSNR_Y: 39.209103 dB; SSIM_Y: 0.972957.
+26-02-16 17:36:50.452 - INFO: img 14:79              - PSNR: 33.750659 dB; SSIM: 0.940905; LPIPS: 0.068182; PSNR_Y: 37.009635 dB; SSIM_Y: 0.970488.
+26-02-16 17:36:50.454 - INFO: ----Average PSNR/SSIM results for Val_Dataset----
+	PSNR: 27.688481 dB; SSIM: 0.882749
+
+26-02-16 17:36:50.454 - INFO: ----Y channel, average PSNR/SSIM----
+	PSNR_Y: 33.205387 dB; SSIM_Y: 0.941310
+
+26-02-16 17:36:50.454 - INFO: ----average LPIPS	: 0.112570
+
+c:\Users\???\Pictures\Screenshots\???? 2026-02-16 184423.png
