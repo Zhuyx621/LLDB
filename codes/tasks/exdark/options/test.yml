@@ -1,0 +1,39 @@
+name: ExDark_test
+suffix: ~
+model: denoising
+distortion: derain
+gpu_ids: [0]
+
+sde:
+  lambda_square: 30
+  T: 100
+  schedule: cosine
+  eps: 0.005
+
+degradation:
+  scale: 1
+
+datasets:
+  test1:
+    name: ExDark
+    mode: LQGT
+    dataroot_GT: C:/ExDark/ExDark/ExDark_CP/images
+    dataroot_LQ: C:/ExDark/ExDark/ExDark_CP/images
+    GT_size: 384        # ⭐ 限制分辨率（6GB推荐384）
+
+network_G:
+  which_model_G: ConditionalNAFNet
+  setting:
+    width: 64
+    enc_blk_nums: [1, 1, 1, 28]
+    middle_blk_num: 1
+    dec_blk_nums: [1, 1, 1, 1]
+
+path:
+  pretrain_model_G: C:/Users/朱禹溪/Desktop/lolv2-real.pth
+  strict_load: true
+  resume_state: ~
+
+  root: ./
+  results_root: ./results/ExDark_test
+  log: ./results/ExDark_test/log
